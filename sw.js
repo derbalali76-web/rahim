@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-mobile-v71';
+const CACHE = 'rafinage-singleinv-v72';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
