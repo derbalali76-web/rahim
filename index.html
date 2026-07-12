@@ -25,12 +25,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{font-family:'Tajawal',system-ui,sans-serif;height:100%;overscroll-behavior-y:none;}
+@supports not (height:100dvh){ .rf-app{height:100vh !important;} }
+nav{padding-bottom:env(safe-area-inset-bottom,0);}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#C9922A;border-radius:999px;}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 input:focus,select:focus,button:focus{outline:none;}
+
+/* ═══ استجابة الهاتف (متناسقة) ═══ */
+table{width:100%;}
+@media (max-width:640px){
+  /* الجداول: تمرير أفقي سلس داخل بطاقاتها */
+  .rf-card{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:560px;}
+  table th,table td{padding:8px 6px !important;font-size:12px !important;}
+  table td div{max-width:120px !important;}
+  /* الشبكات: عمود واحد على الهاتف */
+  .rf-grid2,.rf-grid3,.rf-grid4{grid-template-columns:1fr !important;}
+  /* حشوات وبطاقات أصغر */
+  main{padding:10px !important;}
+  h1{font-size:20px !important;}
+  /* أزرار وحقول ملء العرض */
+  input,select{font-size:16px !important;} /* يمنع تكبير iOS التلقائي */
+}
+@media (max-width:400px){
+  table{min-width:520px;}
+  table th,table td{padding:6px 4px !important;font-size:11px !important;}
+}
 </style>
 <script>
 if ('serviceWorker' in navigator) {
@@ -134,7 +157,7 @@ const MONTHS_AR=[
    SHARED UI ATOMS
 ═══════════════════════════════════════════════ */
 const Card=({t,children,style={}})=>(
-  <div style={{background:t.cardBg,border:`1px solid ${t.border}`,borderRadius:14,boxShadow:t.shadow,transition:'box-shadow 0.15s',...style}}>
+  <div className="rf-card" style={{background:t.cardBg,border:`1px solid ${t.border}`,borderRadius:14,boxShadow:t.shadow,transition:'box-shadow 0.15s',...style}}>
     {children}
   </div>
 );
@@ -3161,7 +3184,7 @@ function LoginScreen({t,onAuthenticate}){
     if(msg) setErr(msg);
   };
   return (
-    <div dir="rtl" style={{height:'100vh',display:'flex',alignItems:'center',justifyContent:'center',
+    <div dir="rtl" style={{height:'100dvh',display:'flex',alignItems:'center',justifyContent:'center',
       background:'linear-gradient(135deg,#060915,#0F1E36)',fontFamily:"'Tajawal',system-ui,sans-serif",padding:20}}>
       <div style={{width:'100%',maxWidth:380,background:'#0D1525',border:'1px solid #1A2840',borderRadius:20,
         padding:'34px 30px',boxShadow:'0 20px 60px rgba(0,0,0,0.5)'}}>
@@ -3451,7 +3474,7 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
   useEffect(()=>{ if(tab==='inv') markSeen(); },[tab,maxId]);
 
   return (
-    <div dir="rtl" style={{height:'100vh',display:'flex',flexDirection:'column',
+    <div dir="rtl" style={{height:'100dvh',display:'flex',flexDirection:'column',
       background:t.appBgSolid||t.appBg,fontFamily:"'Tajawal',system-ui,sans-serif",color:t.textPrimary,overflow:'hidden'}}>
       <style>{`*{box-sizing:border-box;}::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:${t.goldAccent};border-radius:999px;}
         .nav-btn{border:none;cursor:pointer;font-family:'Tajawal',system-ui,sans-serif;background:transparent;}
@@ -3746,7 +3769,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v70';
+const APP_VERSION = 'v71';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
@@ -4687,7 +4710,7 @@ function RafinageApp(){
   /* أثناء استعادة الجلسة المحفوظة (إعادة فتح التطبيق) */
   if (AUTH.enabled && !authResolved && !session) {
     return (
-      <div dir="rtl" style={{ height:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:14, background:t.appBg, color:t.textPrimary, fontFamily:"'Tajawal',system-ui,sans-serif" }}>
+      <div dir="rtl" style={{ height:'100dvh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:14, background:t.appBg, color:t.textPrimary, fontFamily:"'Tajawal',system-ui,sans-serif" }}>
         <div style={{ width:46, height:46, borderRadius:'50%', border:`4px solid ${t.border}`, borderTopColor:t.goldSolid, animation:'spin 0.9s linear infinite' }}/>
         <div style={{ fontSize:15, fontWeight:800, color:t.textMuted }}>جارٍ استعادة الجلسة…</div>
         <style>{'@keyframes spin{to{transform:rotate(360deg)}}'}</style>
@@ -4764,7 +4787,7 @@ function RafinageApp(){
       { key:'archive',  Icon:LayersIco, label:'أرشيف ورشتي' },
     ];
     return (
-      <div dir="rtl" style={{ height:'100vh', display:'flex', flexDirection:'column',
+      <div dir="rtl" style={{ height:'100dvh', display:'flex', flexDirection:'column',
         background:t.appBgSolid||t.appBg, fontFamily:"'Tajawal',system-ui,sans-serif",
         color:t.textPrimary, overflow:'hidden' }}>
         <style>{`*{box-sizing:border-box;}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
@@ -4839,7 +4862,7 @@ function RafinageApp(){
   }
 
   return (
-    <div dir="rtl" style={{ height: '100vh', display: 'flex', flexDirection: 'column',
+    <div dir="rtl" style={{ height: '100dvh', display: 'flex', flexDirection: 'column',
       background: t.appBgSolid || t.appBg, fontFamily: "'Tajawal',system-ui,sans-serif",
       color: t.textPrimary, transition: 'background 0.25s,color 0.25s', overflow: 'hidden' }}>
 
