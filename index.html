@@ -3776,7 +3776,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v76';
+const APP_VERSION = 'v77';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
@@ -4428,7 +4428,7 @@ function RafinageApp(){
     /* 3) قيد تعديل (نفس اصطلاح الفاتورة الأصلية) — يحدّث المخزون وحساب الزبون */
     if (dNet !== 0 || dPrice !== 0) {
       postEntry({ type:'تعديل', actType:'تعديل', customer: inv.customer, customerId: inv.customerId || custIdFor(inv.customer),
-        gold: -dNet, debtGold: +dNet, debtDinar: -dPrice, dinar: 0, note: reason, diffGold: dNet, diffDinar: dPrice,
+        gold: 0, debtGold: +dNet, debtDinar: -dPrice, dinar: 0, note: reason, diffGold: dNet, diffDinar: dPrice,
         desc:`تصحيح فاتورة سند #${invId}: ${reason}`, amount: Math.abs(dPrice) || Math.abs(dNet), refId: invId });
     }
     setEditingInvoice(null);

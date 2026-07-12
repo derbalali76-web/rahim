@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-uxpolish-v76';
+const CACHE = 'rafinage-editlango-v77';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
