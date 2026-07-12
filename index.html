@@ -3067,7 +3067,7 @@ function WorkshopsArchiveTab({t,workshop1Sessions,workshop2Sessions}){
 ═══════════════════════════════════════════════ */
 const USERS = [
   { username:'admin',   password:'admin', role:'admin' },
-  { username:'dahmoun', password:'0000',  role:'worker', workshop:'workshop1', wsName:'rahim', accent:'#0EA5E9' },
+  { username:'rahim', password:'0000',  role:'worker', workshop:'workshop1', wsName:'rahim', accent:'#0EA5E9' },
 ];
 
 /* ═══════════════════════════════════════════════
@@ -3744,7 +3744,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v73';
+const APP_VERSION = 'v74';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
