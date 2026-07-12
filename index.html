@@ -37,25 +37,26 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 input:focus,select:focus,button:focus{outline:none;}
 
-/* ═══ استجابة الهاتف (متناسقة) ═══ */
+/* ═══ استجابة الهاتف (متناسقة — بلا تمرير أفقي) ═══ */
 table{width:100%;}
+html,body{overflow-x:hidden;}
 @media (max-width:640px){
-  /* الجداول: تمرير أفقي سلس داخل بطاقاتها */
-  .rf-card{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table{min-width:560px;}
-  table th,table td{padding:8px 6px !important;font-size:12px !important;}
-  table td div{max-width:120px !important;}
+  /* الجداول: تنضغط لتناسب عرض الشاشة — لا تمرير يمين/يسار */
+  .rf-card{overflow-x:hidden;}
+  table{min-width:0;width:100%;table-layout:auto;}
+  table th,table td{padding:6px 3px !important;font-size:11px !important;word-break:break-word;}
+  table td div{max-width:100% !important;font-size:10px !important;}
+  table td button{padding:4px 6px !important;font-size:11px !important;}
   /* الشبكات: عمود واحد على الهاتف */
   .rf-grid2,.rf-grid3,.rf-grid4{grid-template-columns:1fr !important;}
-  /* حشوات وبطاقات أصغر */
-  main{padding:10px !important;}
+  /* حشوات وبطاقات أصغر — ملء الشاشة */
+  main{padding:8px !important;}
   h1{font-size:20px !important;}
-  /* أزرار وحقول ملء العرض */
-  input,select{font-size:16px !important;} /* يمنع تكبير iOS التلقائي */
+  /* حقول: خط 16px يمنع تكبير iOS */
+  input,select{font-size:16px !important;}
 }
 @media (max-width:400px){
-  table{min-width:520px;}
-  table th,table td{padding:6px 4px !important;font-size:11px !important;}
+  table th,table td{padding:5px 2px !important;font-size:10px !important;}
 }
 </style>
 <script>
@@ -1768,6 +1769,13 @@ function SingleInvoiceForm({t,onSaveInvoice,debtsList,invoiceId,prefix,extraLing
   const [status,setStatus]=useState('خالص');
   const calcRows=()=>Math.max(12,Math.floor((window.innerHeight-390)/36));
   const [items,setItems]=useState(()=>Array.from({length:calcRows()},()=>({weight:0,karat:0,khalas:0})));
+  /* سطر تلقائي: إن امتلأ آخر سطر أُضيف سطر فارغ جديد */
+  useEffect(()=>{
+    const last=items[items.length-1];
+    if(last && ((parseFloat(last.weight)||0)>0 || (parseFloat(last.karat)||0)>0)){
+      setItems(p=>[...p,{weight:0,karat:0,khalas:0}]);
+    }
+  },[items]);
   const [fee,setFee]=useState(0);
   const [price,setPrice]=useState(0);
   const [prevDinar,setPrevDinar]=useState(0);
@@ -2049,7 +2057,7 @@ function InvoiceTab({t,onSaveInvoice,debtsList,nextInvoiceId,extraLingotBalance,
   return (
     <div style={{display:'flex',flexDirection:'column',flex:1,minHeight:0,overflow:'auto',
       padding:isMobile?'10px 10px 14px':'14px 14px 10px',boxSizing:'border-box',alignItems:'center'}}>
-      <div style={{width:'100%',maxWidth:860,display:'flex',flexDirection:'column',flex:1,minHeight:0}}>
+      <div style={{width:'100%',display:'flex',flexDirection:'column',flex:1,minHeight:0}}>
         <SingleInvoiceForm t={t} onSaveInvoice={onSaveInvoice} debtsList={debtsList}
           invoiceId={id1} prefix="inv-a" extraLingotBalance={extraLingotBalance} customerNames={customerNames}/>
       </div>
@@ -3744,7 +3752,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v74';
+const APP_VERSION = 'v75';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){

@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-workeremail-v74';
+const CACHE = 'rafinage-nofscroll-v75';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
