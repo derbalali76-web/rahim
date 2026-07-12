@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-singleinv-v72';
+const CACHE = 'rafinage-icon-v73';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
