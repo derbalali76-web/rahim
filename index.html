@@ -47,8 +47,9 @@ html,body{overflow-x:hidden;}
   table th,table td{padding:6px 3px !important;font-size:11px !important;word-break:break-word;}
   table td div{max-width:100% !important;font-size:10px !important;}
   table td button{padding:4px 6px !important;font-size:11px !important;}
-  /* الشبكات: عمود واحد على الهاتف */
-  .rf-grid2,.rf-grid3,.rf-grid4{grid-template-columns:1fr !important;}
+  /* الشبكات: الإحصائيات 2×2 على الهاتف */
+  .rf-grid3,.rf-grid4{grid-template-columns:1fr 1fr !important;}
+  .rf-grid2{grid-template-columns:1fr 1fr !important;}
   /* حشوات وبطاقات أصغر — ملء الشاشة */
   main{padding:8px !important;}
   h1{font-size:20px !important;}
@@ -1204,7 +1205,7 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
       </div>
 
       {/* ── ACTION CARDS ── */}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14}}>
+      <div className="rf-grid3" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14}}>
 
         {/* أخذ */}
         <div style={{
@@ -2862,7 +2863,7 @@ function WorkshopTab({t,title,description,accentColor,lingots,onReturnToCoffer,o
             </div>
           </Card>
 
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10}}>
+          <div className="rf-grid4" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10}}>
             {[
               {label:'ميزان خام',val:`${fmt(remainingRaw)} غ`,color:t.textPrimary},
               {label:'ميزان 24',val:`${fmt(remainingPure24)} غ`,color:t.goldSolid},
@@ -2999,14 +3000,6 @@ function WorkshopsArchiveTab({t,workshop1Sessions,workshop2Sessions}){
           <LayersIco size={14} color={t.goldAccent}/> أرشيف الورشات
         </span>
         <div style={{display:'flex',alignItems:'center',gap:10}}>
-          <div style={{display:'flex',gap:6}}>
-            {wsOptions.map(o=>(
-              <button key={o.key} onClick={()=>setSelectedWs(o.key)}
-                style={{padding:'6px 16px',borderRadius:20,border:`1.5px solid ${selectedWs===o.key?o.color:t.border}`,background:selectedWs===o.key?o.color+'18':t.inputBg,color:selectedWs===o.key?o.color:t.textSec,fontWeight:800,fontSize:14,cursor:'pointer',fontFamily:'inherit',transition:'all 0.15s'}}>
-                {o.label}
-              </button>
-            ))}
-          </div>
           <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)}
             style={{background:t.inputBg,border:`1px solid ${t.border}`,borderRadius:8,padding:'7px 10px',fontSize:14,fontWeight:700,color:t.textPrimary,cursor:'pointer',fontFamily:'inherit'}}>
             {MONTHS_AR.map(m=><option key={m.value} value={m.value}>{m.label}</option>)}
@@ -3014,7 +3007,7 @@ function WorkshopsArchiveTab({t,workshop1Sessions,workshop2Sessions}){
         </div>
       </Card>
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:12}}>
+      <div className="rf-grid4" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:12}}>
         <StatCard t={t} label="عدد الجلسات" value={`${sessions.length}`} accent={t.goldSolid}/>
         <StatCard t={t} label="إجمالي الخام" value={`${fmt(totalRaw)} غ`} accent={t.textPrimary}/>
         <StatCard t={t} label="إجمالي السلعة الواجدة" value={`${fmt(totalMfg)} غ`} accent={t.green}/>
@@ -3023,13 +3016,10 @@ function WorkshopsArchiveTab({t,workshop1Sessions,workshop2Sessions}){
 
       <Card t={t} style={{overflow:'hidden'}}>
         <table style={{width:'100%',borderCollapse:'collapse'}}>
-          <Thead t={t} cols={['الورشة','التاريخ','عدد السبائك','ميزان خام','ميزان 24','السلعة الواجدة','لابارت','عرض الحساب']}/>
+          <Thead t={t} cols={['التاريخ','عدد السبائك','ميزان خام','ميزان 24','السلعة الواجدة','لابارت','عرض الحساب']}/>
           <tbody>
             {sessions.map(s=>(
               <tr key={s.id} style={{borderBottom:`1px solid ${t.borderLight}`}}>
-                <td style={{padding:'11px 14px',textAlign:'center'}}>
-                  <Badge color={wsColor[s.ws]||t.goldSolid} label={s.ws}/>
-                </td>
                 <td style={{padding:'11px 14px',textAlign:'center',fontFamily:'monospace',fontSize:14,color:t.textMuted}}>{s.date}</td>
                 <td style={{padding:'11px 14px',textAlign:'center',fontWeight:900,fontSize:16,color:t.textPrimary}}>{s.lingotsCount}</td>
                 <td style={{padding:'11px 14px',textAlign:'center',fontFamily:'monospace',fontWeight:900,fontSize:16,color:t.textPrimary}}>{fmt(s.rawWeight)} غ</td>
@@ -3047,7 +3037,7 @@ function WorkshopsArchiveTab({t,workshop1Sessions,workshop2Sessions}){
                 </td>
               </tr>
             ))}
-            {sessions.length===0&&<tr><td colSpan={8} style={{padding:28,textAlign:'center',color:t.textMuted,fontWeight:700,fontSize:17}}>لا توجد جلسات محفوظة — اضغط "حفظ الحساب" في الورشة لتسجيل جلسة</td></tr>}
+            {sessions.length===0&&<tr><td colSpan={7} style={{padding:28,textAlign:'center',color:t.textMuted,fontWeight:700,fontSize:17}}>لا توجد جلسات محفوظة — اضغط "حفظ الحساب" في الورشة لتسجيل جلسة</td></tr>}
           </tbody>
         </table>
       </Card>
@@ -3299,7 +3289,7 @@ function WorkerWorkshopTab({t,wsName,accentColor,bars,onAddBar,onDeleteBar,onEdi
       </Card>
 
       {/* Stats */}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10}}>
+      <div className="rf-grid4" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:10}}>
         {[
           {label:'ميزان خام',val:`${fmt(remRaw)} غ`,color:t.textPrimary},
           {label:'ميزان 24',val:`${fmt(remPure)} غ`,color:t.goldSolid},
@@ -3776,7 +3766,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v77';
+const APP_VERSION = 'v78';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
