@@ -1484,7 +1484,7 @@ function CofferTab({t,lingots,onOpenTransferModal,onLoanLingot,onAddBar,onEditBa
 
       <Card t={t} style={{overflow:'hidden'}}>
         <table style={{width:'100%',borderCollapse:'collapse'}}>
-          <Thead t={t} cols={['اختيار','الوزن','العيار','الصافي 24k','المصدر','إجراءات']}/>
+          <Thead t={t} cols={['اختيار','الوزن','العيار','الصافي 24k','المصدر','سلف']}/>
           <tbody>
             {filtered.map((lingot)=>{
               const isSelected=selectedIds.includes(lingot.id);
@@ -1506,22 +1506,10 @@ function CofferTab({t,lingots,onOpenTransferModal,onLoanLingot,onAddBar,onEditBa
                     {(()=>{ const m=String(lingot.id||'').match(/^L-(.+)-\d+$/); return m?<div style={{fontSize:11,color:t.textMuted,fontWeight:600,marginTop:2}}>فاتورة #{m[1]}</div>:null; })()}
                   </td>
                   <td style={{padding:'12px',textAlign:'center'}}>
-                    <div style={{display:'flex',gap:6,justifyContent:'center',alignItems:'center'}}>
-                      <button onClick={e=>{e.stopPropagation();setLoanName('');setLoanLingot(lingot);}}
-                        style={{padding:'5px 13px',borderRadius:7,border:`1px solid ${(t.blue||'#3B82F6')}50`,background:`${(t.blue||'#3B82F6')}18`,color:t.blue||'#3B82F6',fontWeight:800,fontSize:14,cursor:'pointer',fontFamily:'inherit'}}>
-                        سلف
-                      </button>
-                      <button onClick={e=>{e.stopPropagation();setBarModal({id:lingot.id,weight:String(lingot.weight),karat:String(lingot.karat),source:lingot.source||''});}}
-                        title="تعديل"
-                        style={{padding:'5px 9px',borderRadius:7,border:`1px solid ${t.border}`,background:t.inputBg,color:t.textSec,fontWeight:800,fontSize:14,cursor:'pointer',fontFamily:'inherit'}}>
-                        ✎
-                      </button>
-                      <button onClick={e=>{e.stopPropagation(); if(confirm(`حذف السبيكة (${fmt(lingot.weight)}غ / ${lingot.karat})؟`)) onDeleteBar(lingot.id);}}
-                        title="حذف"
-                        style={{padding:'5px 9px',borderRadius:7,border:'1px solid rgba(239,68,68,0.35)',background:'rgba(239,68,68,0.12)',color:'#EF4444',fontWeight:900,fontSize:14,cursor:'pointer',fontFamily:'inherit'}}>
-                        ✕
-                      </button>
-                    </div>
+                    <button onClick={e=>{e.stopPropagation();setLoanName('');setLoanLingot(lingot);}}
+                      style={{padding:'5px 13px',borderRadius:7,border:`1px solid ${(t.blue||'#3B82F6')}50`,background:`${(t.blue||'#3B82F6')}18`,color:t.blue||'#3B82F6',fontWeight:800,fontSize:14,cursor:'pointer',fontFamily:'inherit'}}>
+                      سلف
+                    </button>
                   </td>
                 </tr>
               );
@@ -3746,7 +3734,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v83';
+const APP_VERSION = 'v84';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
