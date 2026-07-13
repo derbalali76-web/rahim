@@ -3468,7 +3468,7 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
   const maxId=myInvoices.reduce((a,i)=>Math.max(a,numId(i.id)),0);
   const newInvoices=myInvoices.filter(i=>!i.voided && numId(i.id)>lastSeen);
   const markSeen=()=>{ if(maxId>lastSeen){ setLastSeen(maxId); try{localStorage.setItem(seenKey,String(maxId));}catch(e){} } };
-  useEffect(()=>{ if(tab==='inv') markSeen(); },[tab,maxId]);
+  const openLatestInvoice=()=>{ markSeen(); const inv=[...myInvoices].sort((a,b)=>numId(b.id)-numId(a.id))[0]; if(inv) onOpenReceipt(inv); };
 
   return (
     <div dir="rtl" style={{height:'100dvh',display:'flex',flexDirection:'column',
@@ -3489,7 +3489,7 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
           </div>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:7}}>
-          <button onClick={()=>setTab('inv')} title="الفواتير الجديدة"
+          <button onClick={openLatestInvoice} title="الفواتير الجديدة"
             style={{position:'relative',display:'flex',alignItems:'center',background:t.inputBg,border:`1px solid ${t.border}`,borderRadius:20,padding:'5px 9px',cursor:'pointer',fontSize:15}}>
             🔔
             {newInvoices.length>0&&<span style={{position:'absolute',top:-5,insetInlineStart:-5,minWidth:18,height:18,padding:'0 4px',borderRadius:9,background:t.red,color:'#fff',fontSize:11,fontWeight:900,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 0 2px '+t.headerBg}}>{newInvoices.length}</span>}
@@ -3515,7 +3515,7 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
           </div>
         )}
         {newInvoices.length>0&&(
-          <div onClick={()=>setTab('inv')}
+          <div onClick={openLatestInvoice}
             style={{display:'flex',alignItems:'center',gap:10,cursor:'pointer',background:`${accent}15`,border:`1px solid ${accent}45`,
               borderRadius:12,padding:'12px 16px'}}>
             <span style={{fontSize:20}}>🔔</span>
@@ -3540,19 +3540,8 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
           </Card>
         </div>
 
-        {/* TABS */}
-        <div style={{display:'flex',gap:8}}>
-          {[{k:'tx',label:'سجل معاملاتي'},{k:'inv',label:'فواتيري'}].map(x=>(
-            <button key={x.k} onClick={()=>setTab(x.k)}
-              style={{flex:1,position:'relative',padding:'10px',borderRadius:10,border:`1px solid ${tab===x.k?accent:t.border}`,
-                background:tab===x.k?`${accent}18`:t.cardBg,color:tab===x.k?accent:t.textSec,fontWeight:900,fontSize:15,cursor:'pointer',fontFamily:'inherit'}}>
-              {x.label}
-              {x.k==='inv'&&newInvoices.length>0&&<span style={{position:'absolute',top:6,insetInlineStart:8,width:9,height:9,borderRadius:9,background:t.red}}/>}
-            </button>
-          ))}
-        </div>
-
-        {tab==='tx'?(
+        {/* سجل المعاملات */}
+        {(
           myLedger.length===0?(
             <Card t={t} style={{padding:28,textAlign:'center',color:t.textMuted,fontWeight:700,fontSize:16}}>لا توجد معاملات بعد.</Card>
           ):(
@@ -3572,7 +3561,10 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
                       ? (e.diffDinar?<span style={{color:e.diffDinar>0?'#10B981':'#EF4444'}}>{(e.diffDinar>0?'+':'−')+fmtInt(Math.abs(e.diffDinar))+' دج'}</span>:null)
                       : (d>0?<span style={{color:t.textPrimary}}>{fmtInt(d)+' دج'}</span>:null);
                     return (
-                      <tr key={e.id||i} style={{borderBottom:`1px solid ${t.borderLight}`,opacity:e.reversed?0.5:1}}>
+                      <tr key={e.id||i}
+                        onClick={()=>{ if(e.refId){ const inv=myInvoices.find(v=>String(v.id)===String(e.refId)); if(inv) onOpenReceipt(inv); } }}
+                        style={{borderBottom:`1px solid ${t.borderLight}`,opacity:e.reversed?0.5:1,
+                          cursor:e.refId&&myInvoices.some(v=>String(v.id)===String(e.refId))?'pointer':'default'}}>
                         <td style={{padding:'10px 8px',textAlign:'center',fontFamily:'monospace',fontSize:12,color:t.textMuted}}>{e.date}</td>
                         <td style={{padding:'10px 8px',textAlign:'center'}}><Badge color={cfg.color} label={cfg.label}/>{(()=>{ const nt=noteOf(e); return nt?<div style={{fontSize:11,color:t.textMuted,fontWeight:600,marginTop:3}}>📝 {nt}</div>:null; })()}</td>
                         {isMobile?(
@@ -3588,31 +3580,6 @@ function CustomerPortal({t,customerName,customerId,accent,myLedger,myInvoices,my
                             {dinarNode||'—'}
                           </td>
                         </>)}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </Card>
-          )
-        ):(
-          myInvoices.length===0?(
-            <Card t={t} style={{padding:28,textAlign:'center',color:t.textMuted,fontWeight:700,fontSize:16}}>لا توجد فواتير.</Card>
-          ):(
-            <Card t={t} style={{overflow:'hidden'}}>
-              <table style={{width:'100%',borderCollapse:'collapse'}}>
-                <Thead t={t} cols={['رقم','التاريخ','الحالة','عرض']}/>
-                <tbody>
-                  {myInvoices.map(inv=>{
-                    const settled=inv.status==='خالص'; const voided=inv.voided;
-                    return (
-                      <tr key={inv.id} style={{borderBottom:`1px solid ${t.borderLight}`,opacity:voided?0.55:1}}>
-                        <td style={{padding:'11px 12px',textAlign:'center',fontFamily:'monospace',fontWeight:800,color:t.goldSolid,textDecoration:voided?'line-through':'none'}}>#{inv.id}</td>
-                        <td style={{padding:'11px 12px',textAlign:'center',fontFamily:'monospace',fontSize:13,color:t.textMuted}}>{inv.date}</td>
-                        <td style={{padding:'11px 12px',textAlign:'center'}}>{voided?<Badge color={t.textMuted} label="ملغاة"/>:<Badge color={settled?t.green:t.red} label={inv.status}/>}</td>
-                        <td style={{padding:'11px 12px',textAlign:'center'}}>
-                          <button onClick={()=>onOpenReceipt(inv)} style={{background:`${t.goldAccent}15`,border:`1px solid ${t.goldAccent}35`,borderRadius:8,padding:'5px 13px',fontSize:14,color:t.goldSolid,fontWeight:800,cursor:'pointer',fontFamily:'inherit'}}>عرض</button>
-                        </td>
                       </tr>
                     );
                   })}
@@ -3766,7 +3733,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v78';
+const APP_VERSION = 'v79';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
