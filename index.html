@@ -46,6 +46,7 @@ html,body{overflow-x:hidden;}
   table{min-width:0;width:100%;table-layout:auto;}
   table th,table td{padding:6px 3px !important;font-size:11px !important;word-break:break-word;}
   table td div{max-width:100% !important;font-size:10px !important;}
+  table td button,table td span{white-space:nowrap;}
   table td button{padding:4px 6px !important;font-size:11px !important;}
   /* الشبكات: الإحصائيات 2×2 على الهاتف */
   .rf-grid3,.rf-grid4{grid-template-columns:1fr 1fr !important;}
@@ -2100,14 +2101,13 @@ function LogTab({t,invoices,onOpenReceipt,onDeleteInvoice,onEditInvoice}){
 
       <Card t={t} style={{overflow:'hidden'}}>
         <table style={{width:'100%',borderCollapse:'collapse'}}>
-          <Thead t={t} cols={['رقم الفاتورة','الزبون','الحالة','التاريخ','عرض الفاتورة','حذف']}/>
+          <Thead t={t} cols={['الزبون','الحالة','عرض الفاتورة','حذف']}/>
           <tbody>
             {filtered.map(inv=>{
               const settled=inv.status==='خالص';
               const voided=inv.voided;
               return (
                 <tr key={inv.id} style={{borderBottom:`1px solid ${t.borderLight}`,transition:'background 0.12s',cursor:'default',opacity:voided?0.55:1}}>
-                  <td style={{padding:'12px 14px',textAlign:'center',fontFamily:'monospace',fontWeight:800,color:t.goldSolid,fontSize:16,textDecoration:voided?'line-through':'none'}}>#{inv.id}</td>
                   <td style={{padding:'12px 14px',textAlign:'center'}}>
                     <div style={{fontWeight:800,color:t.textPrimary,fontSize:17}}>{inv.customer}</div>
                     <div style={{fontSize:13,color:t.textMuted,fontFamily:'monospace'}}>{inv.date}</div>
@@ -2115,7 +2115,6 @@ function LogTab({t,invoices,onOpenReceipt,onDeleteInvoice,onEditInvoice}){
                   <td style={{padding:'12px 14px',textAlign:'center'}}>
                     {voided?<Badge color={t.textMuted} label="ملغاة"/>:<Badge color={settled?t.green:t.red} label={inv.status}/>}
                   </td>
-                  <td style={{padding:'12px 14px',textAlign:'center',fontFamily:'monospace',fontSize:14,color:t.textMuted}}>{inv.date}</td>
                   <td style={{padding:'12px 14px',textAlign:'center'}}>
                     <div style={{display:'inline-flex',gap:6,flexWrap:'wrap',justifyContent:'center'}}>
                       <button onClick={()=>onOpenReceipt(inv)} style={{background:`${t.goldAccent}15`,border:`1px solid ${t.goldAccent}35`,borderRadius:8,padding:'5px 13px',fontSize:14,color:t.goldSolid,fontWeight:800,cursor:'pointer',fontFamily:'inherit',display:'inline-flex',alignItems:'center',gap:6}}>
@@ -2136,7 +2135,7 @@ function LogTab({t,invoices,onOpenReceipt,onDeleteInvoice,onEditInvoice}){
                 </tr>
               );
             })}
-            {filtered.length===0&&<tr><td colSpan={6} style={{padding:28,textAlign:'center',color:t.textMuted,fontWeight:700,fontSize:17}}>لا توجد فواتير مطابقة</td></tr>}
+            {filtered.length===0&&<tr><td colSpan={4} style={{padding:28,textAlign:'center',color:t.textMuted,fontWeight:700,fontSize:17}}>لا توجد فواتير مطابقة</td></tr>}
           </tbody>
         </table>
       </Card>
@@ -3733,7 +3732,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v79';
+const APP_VERSION = 'v80';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
