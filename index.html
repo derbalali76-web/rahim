@@ -41,11 +41,19 @@ input:focus,select:focus,button:focus{outline:none;}
 table{width:100%;}
 html,body{overflow-x:hidden;}
 @media (max-width:640px){
+  /* ✦ الحل الجذري: السبب الأصلي لكل فيض هو أن عناصر flex/grid ترفض الانكماش.
+     min-width:0 يجعل كل عنصر قابلاً للانكماش ليناسب مكانه — يسري على كل الصفحات. */
+  *{min-width:0;}
+  div,span{overflow-wrap:anywhere;}
+  img,svg,canvas,video{max-width:100%;height:auto;}
+  /* ✦ الأرقام الكبيرة (monospace بخط 20px+) تتقلص تلقائياً لتناسب مكانها بدل أن تُقص */
+  div[style*="monospace"][style*="font-size: 2"],div[style*="monospace"][style*="font-size:2"]{font-size:clamp(14px,5vw,24px) !important;white-space:normal !important;line-height:1.25;}
+  td[style*="monospace"],span[style*="monospace"]{white-space:normal;}
   /* الجداول: تنضغط لتناسب عرض الشاشة — لا تمرير يمين/يسار */
   .rf-card{overflow-x:hidden;}
   table{min-width:0;width:100%;table-layout:auto;}
   table th,table td{padding:6px 3px !important;font-size:11px !important;word-break:break-word;}
-  table td div{max-width:100% !important;font-size:10px !important;}
+  table td div{max-width:100% !important;font-size:11px !important;}
   table td button,table td span{white-space:nowrap;}
   table td button{padding:4px 6px !important;font-size:11px !important;}
   /* الحقول داخل الجداول: عرض مرن لا يفيض */
@@ -3734,7 +3742,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v81';
+const APP_VERSION = 'v82';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){

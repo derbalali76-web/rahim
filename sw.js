@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-acctfit-v81';
+const CACHE = 'rafinage-rootfit-v82';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
