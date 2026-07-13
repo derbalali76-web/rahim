@@ -48,6 +48,8 @@ html,body{overflow-x:hidden;}
   table td div{max-width:100% !important;font-size:10px !important;}
   table td button,table td span{white-space:nowrap;}
   table td button{padding:4px 6px !important;font-size:11px !important;}
+  /* الحقول داخل الجداول: عرض مرن لا يفيض */
+  table td input{width:100% !important;min-width:0 !important;max-width:110px;font-size:13px !important;padding:5px 4px !important;box-sizing:border-box;}
   /* الشبكات: الإحصائيات 2×2 على الهاتف */
   .rf-grid3,.rf-grid4{grid-template-columns:1fr 1fr !important;}
   .rf-grid2{grid-template-columns:1fr 1fr !important;}
@@ -3732,7 +3734,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v80';
+const APP_VERSION = 'v81';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
