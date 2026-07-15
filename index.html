@@ -61,8 +61,7 @@ html,body{overflow-x:hidden;}
   /* الشبكات: الإحصائيات 2×2 على الهاتف */
   .rf-grid3,.rf-grid4{grid-template-columns:1fr 1fr !important;}
   .rf-grid2{grid-template-columns:1fr 1fr !important;}
-  /* بطاقات أخذ/دفع/مصاريف: كل واحدة بعرض الشاشة كاملاً (لا تكسير للأزرار) */
-  .rf-actions{grid-template-columns:1fr !important;}
+  /* بطاقات أخذ/دفع جنباً إلى جنب، والمصاريف عريضة تحتهما — والمفتوحة تتوسّط وحدها (يُدار بالجافاسكربت) */
   /* بطاقة الأرصدة الرئيسية: عمودياً على الهاتف (الكوفر فوق اللانقو) */
   .rf-balcard{grid-template-columns:1fr !important;row-gap:14px;padding:18px 14px !important;}
   .rf-balcard>div[style*="width: 1px"],.rf-balcard>div[style*="width:1px"]{display:none;}
@@ -1016,6 +1015,7 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
   const inputStyle={background:t.inputBg,border:`1px solid ${t.border}`,borderRadius:10,padding:'9px 13px',fontSize:15,fontWeight:700,color:t.textPrimary,fontFamily:'inherit',textAlign:'right',width:'100%',boxSizing:'border-box'};
   const numStyle={...inputStyle,textAlign:'center',fontFamily:'monospace',fontSize:17,fontWeight:900};
 
+  const anyOpen=takeActive||giveActive||expenseActive;
   const mkForm=(title,hint,color,colorLight,fields,onConfirm,onCancel,confirmLabel)=>(
     <div style={{display:'flex',flexDirection:'column',gap:11}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',paddingBottom:10,borderBottom:`1px solid ${t.border}`}}>
@@ -1229,12 +1229,12 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
       </div>
 
       {/* ── ACTION CARDS ── */}
-      <div className="rf-actions" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14}}>
+      <div className="rf-actions" style={{display:'grid',gridTemplateColumns:anyOpen?'1fr':'1fr 1fr',gap:14}}>
 
         {/* أخذ */}
         <div style={{
           background:t.cardBg,borderRadius:16,border:`1px solid ${t.border}`,
-          boxShadow:t.shadow,padding:20,display:'flex',flexDirection:'column',justifyContent:'center',minHeight:190,
+          boxShadow:t.shadow,padding:20,display:(giveActive||expenseActive)?'none':'flex',flexDirection:'column',justifyContent:'center',minHeight:190,
           transition:'all 0.2s',
         }}>
           {!takeActive?(
@@ -1265,7 +1265,7 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
         {/* دفع */}
         <div style={{
           background:t.cardBg,borderRadius:16,border:`1px solid ${t.border}`,
-          boxShadow:t.shadow,padding:20,display:'flex',flexDirection:'column',justifyContent:'center',minHeight:190,
+          boxShadow:t.shadow,padding:20,display:(takeActive||expenseActive)?'none':'flex',flexDirection:'column',justifyContent:'center',minHeight:190,
         }}>
           {!giveActive?(
             <button onClick={()=>{setGiveActive(true);setTakeActive(false);setExpenseActive(false);}}
@@ -1294,8 +1294,8 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
 
         {/* مصاريف */}
         <div style={{
-          background:t.cardBg,borderRadius:16,border:`1px solid ${t.border}`,
-          boxShadow:t.shadow,padding:20,display:'flex',flexDirection:'column',justifyContent:'center',minHeight:190,
+          background:t.cardBg,borderRadius:16,border:`1px solid ${t.border}`,gridColumn:anyOpen?'auto':'1 / -1',
+          boxShadow:t.shadow,padding:20,display:(takeActive||giveActive)?'none':'flex',flexDirection:'column',justifyContent:'center',minHeight:190,
         }}>
           {!expenseActive?(
             <button onClick={()=>{setExpenseActive(true);setTakeActive(false);setGiveActive(false);}}
@@ -1322,49 +1322,6 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
       </div>
 
       {/* ── RECENT ACTIVITIES ── */}
-      {recentActivities.length>0&&(
-        <div style={{background:t.cardBg,borderRadius:16,border:`1px solid ${t.border}`,boxShadow:t.shadow,overflow:'hidden'}}>
-          <div style={{padding:'13px 18px',borderBottom:`1px solid ${t.border}`,
-            display:'flex',alignItems:'center',justifyContent:'space-between',
-            background:t.theadBg}}>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <div style={{width:8,height:8,borderRadius:'50%',background:G,boxShadow:'0 0 8px rgba(212,160,48,0.6)'}}/>
-              <span style={{fontWeight:900,fontSize:15,color:t.textPrimary}}>آخر المعاملات</span>
-            </div>
-            <span style={{fontSize:12,color:t.textMuted,fontWeight:700}}>{recentActivities.length} عملية</span>
-          </div>
-          <div>
-            {recentActivities.slice(0,5).map((act,i)=>{
-              const c=actCfg[act.type]||{color:t.textSec,label:'عام'};
-              const isCash=act.type==='take'||act.type==='give'||act.type==='expense';
-              return (
-                <div key={i} style={{
-                  display:'flex',alignItems:'center',gap:12,padding:'11px 18px',
-                  borderBottom:i<Math.min(recentActivities.length,5)-1?`1px solid ${t.borderLight}`:'none',
-                  background:i%2===0?'transparent':t.theadBg+'55',
-                }}>
-                  <div style={{width:34,height:34,borderRadius:10,flexShrink:0,
-                    background:`${c.color}15`,border:`1px solid ${c.color}30`,
-                    display:'flex',alignItems:'center',justifyContent:'center',
-                    fontSize:16,color:c.color,fontWeight:900}}>
-                    {act.type==='take'||act.type==='take-gold'?'↑':act.type==='رافيناج'?'✦':'↓'}
-                  </div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:14,fontWeight:800,color:t.textPrimary,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{act.desc}</div>
-                    <div style={{fontSize:12,color:t.textMuted,marginTop:2}}>{act.date}</div>
-                  </div>
-                  <div style={{textAlign:'center',flexShrink:0}}>
-                    <div style={{fontFamily:'monospace',fontWeight:900,fontSize:15,color:c.color}}>
-                      {isCash?fmtInt(act.amount)+' دج':fmt(act.amount)+' غ'}
-                    </div>
-                    <div style={{fontSize:11,color:t.textMuted,fontWeight:700,marginTop:1}}>{c.label}</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
     </div>
   );
@@ -3739,7 +3696,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v86';
+const APP_VERSION = 'v87';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){

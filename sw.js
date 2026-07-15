@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-actionfit-v86';
+const CACHE = 'rafinage-homecards-v87';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
