@@ -1,4 +1,4 @@
-const CACHE = 'rafinage-cofferlean-v84';
+const CACHE = 'rafinage-headerfix-v85';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {

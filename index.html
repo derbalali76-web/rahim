@@ -65,9 +65,16 @@ html,body{overflow-x:hidden;}
   .rf-balcard{grid-template-columns:1fr !important;row-gap:14px;padding:18px 14px !important;}
   .rf-balcard>div[style*="width: 1px"],.rf-balcard>div[style*="width:1px"]{display:none;}
   .rf-balcard>div[style*="text-align"]{padding:0 !important;}
+  /* الورشة: العمودان فوق بعضهما + ترويسة الورشة عمودية */
+  .rf-wsgrid{grid-template-columns:1fr !important;}
+  .rf-wshero{flex-direction:column !important;align-items:stretch !important;gap:14px;padding:18px 14px !important;text-align:center;}
+  .rf-wshero>div{justify-content:center;}
   /* حشوات وبطاقات أصغر — ملء الشاشة */
   main{padding:8px !important;}
   h1{font-size:20px !important;}
+  /* الترويسة: لا تكسير عمودي للأزرار */
+  header button,header span,header div{white-space:nowrap;}
+  header{gap:6px;padding:0 8px !important;}
   /* حقول: خط 16px يمنع تكبير iOS */
   input,select{font-size:16px !important;}
 }
@@ -2811,7 +2818,7 @@ function WorkshopTab({t,title,description,accentColor,lingots,onReturnToCoffer,o
   return (
     <div style={{display:'flex',flexDirection:'column',gap:16}}>
       {/* Header Banner */}
-      <div style={{width:'100%',borderRadius:16,overflow:'hidden',position:'relative',background:`linear-gradient(135deg,${accentColor}22 0%,${accentColor}08 60%,transparent 100%)`,border:`1px solid ${accentColor}30`,padding:'32px 40px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+      <div className="rf-wshero" style={{width:'100%',borderRadius:16,overflow:'hidden',position:'relative',background:`linear-gradient(135deg,${accentColor}22 0%,${accentColor}08 60%,transparent 100%)`,border:`1px solid ${accentColor}30`,padding:'32px 40px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
         {/* Decorative bg text */}
         <div style={{position:'absolute',left:'-10px',top:'50%',transform:'translateY(-50%)',fontSize:120,fontWeight:900,color:`${accentColor}08`,lineHeight:1,userSelect:'none',pointerEvents:'none',fontFamily:'monospace',letterSpacing:-4}}>{title}</div>
         {/* Left: icon + subtitle */}
@@ -2841,7 +2848,7 @@ function WorkshopTab({t,title,description,accentColor,lingots,onReturnToCoffer,o
         </div>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:16}}>
+      <div className="rf-wsgrid" style={{display:'grid',gridTemplateColumns:'1fr auto',gap:16}}>
         <div style={{display:'flex',flexDirection:'column',gap:14}}>
           {/* Stats + save */}
           <Card t={t} style={{padding:'12px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -3311,7 +3318,7 @@ function WorkerWorkshopTab({t,wsName,accentColor,bars,onAddBar,onDeleteBar,onEdi
         ))}
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:16}}>
+      <div className="rf-wsgrid" style={{display:'grid',gridTemplateColumns:'1fr auto',gap:16}}>
         {/* Bars table */}
         <div style={{display:'flex',flexDirection:'column',gap:12}}>
           <Card t={t} style={{padding:'12px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -3734,7 +3741,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v84';
+const APP_VERSION = 'v85';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
@@ -4665,11 +4672,11 @@ function RafinageApp(){
   const FbBadge = () => {
     const cfg = {
       connecting: { color: '#F59E0B', dot: '#F59E0B', label: 'جاري الاتصال...' },
-      online:     { color: '#10C98A', dot: '#10C98A', label: 'Firebase متصل' },
+      online:     { color: '#10C98A', dot: '#10C98A', label: 'متصل' },
       offline:    { color: '#FF4D6D', dot: '#FF4D6D', label: 'بدون إنترنت' },
     }[fbStatus];
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 5,
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap', flexShrink: 0,
         background: `${cfg.color}12`, border: `1px solid ${cfg.color}30`,
         borderRadius: 20, padding: '4px 11px', fontSize: 13, color: cfg.color, fontWeight: 700 }}>
         <span style={{ width: 6, height: 6, borderRadius: '50%', background: cfg.dot,
@@ -4869,16 +4876,7 @@ function RafinageApp(){
         height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         flexShrink: 0, zIndex: 20, boxShadow: t.headerShadow }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 9, background: t.goldGrad,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 2px 8px ${t.goldAccent}45` }}>
-            <SparklesIco size={16} color="#3A1F00"/>
-          </div>
-          <div>
-            <div style={{ fontWeight: 900, fontSize: 17, lineHeight: 1.1, background: t.goldGrad,
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>منظومة الرفاينج</div>
-            <div style={{ fontSize: 11, color: t.textMuted, fontWeight: 700, letterSpacing: 1 }}>GOLD REFINING PRO <span style={{ color: t.goldSolid, fontWeight: 900, letterSpacing: 0 }}>· {APP_VERSION}</span></div>
-          </div>
+          <div style={{ fontSize: 12, color: t.textMuted, fontWeight: 900, letterSpacing: 0 }}>{APP_VERSION}</div>
         </div>
 
         {!isMobile && <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -4927,7 +4925,8 @@ function RafinageApp(){
           <button onClick={handleLogout}
             style={{ display: 'flex', alignItems: 'center', gap: 5, background: `${t.red}12`,
               border: `1px solid ${t.red}35`, borderRadius: 20, padding: isMobile ? '6px 10px' : '4px 11px',
-              fontSize: 14, color: t.red, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+              fontSize: 14, color: t.red, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              whiteSpace: 'nowrap', flexShrink: 0 }}>
             <span>خروج</span>
           </button>
         </div>
