@@ -61,6 +61,8 @@ html,body{overflow-x:hidden;}
   /* الشبكات: الإحصائيات 2×2 على الهاتف */
   .rf-grid3,.rf-grid4{grid-template-columns:1fr 1fr !important;}
   .rf-grid2{grid-template-columns:1fr 1fr !important;}
+  /* بطاقات أخذ/دفع/مصاريف: كل واحدة بعرض الشاشة كاملاً (لا تكسير للأزرار) */
+  .rf-actions{grid-template-columns:1fr !important;}
   /* بطاقة الأرصدة الرئيسية: عمودياً على الهاتف (الكوفر فوق اللانقو) */
   .rf-balcard{grid-template-columns:1fr !important;row-gap:14px;padding:18px 14px !important;}
   .rf-balcard>div[style*="width: 1px"],.rf-balcard>div[style*="width:1px"]{display:none;}
@@ -1227,7 +1229,7 @@ function HomeTab({t,dinarCofferTotal,extraLingotBalance,lingotsTotalWeight,recen
       </div>
 
       {/* ── ACTION CARDS ── */}
-      <div className="rf-grid3" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14}}>
+      <div className="rf-actions" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14}}>
 
         {/* أخذ */}
         <div style={{
@@ -1476,10 +1478,6 @@ function CofferTab({t,lingots,onOpenTransferModal,onLoanLingot,onAddBar,onEditBa
             style={{width:'100%',background:t.inputBg,border:`1px solid ${t.border}`,borderRadius:9,padding:'8px 36px 8px 12px',fontSize:16,fontWeight:700,color:t.textPrimary,fontFamily:'inherit',textAlign:'right'}}/>
           <SearchIco size={14} color={t.textMuted} style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)'}}/>
         </div>
-        <button onClick={()=>setBarModal({weight:'',karat:'',source:'رصيد افتتاحي'})}
-          style={{padding:'8px 14px',background:`${t.goldAccent}18`,border:`1px solid ${t.goldAccent}55`,borderRadius:9,fontSize:14,fontWeight:800,color:t.goldSolid,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap'}}>
-          + إضافة سبيكة
-        </button>
         {filtered.length>0&&(
           <button onClick={()=>setSelectedIds(isAllSelected?[]:filtered.map(l=>l.id))}
             style={{padding:'8px 14px',background:t.inputBg,border:`1px solid ${t.border}`,borderRadius:9,fontSize:14,fontWeight:800,color:t.textSec,cursor:'pointer',fontFamily:'inherit',display:'flex',alignItems:'center',gap:6,whiteSpace:'nowrap'}}>
@@ -3741,7 +3739,7 @@ function migrateLegacy(local){
 }
 
 const _round6 = n => Math.round((n + Number.EPSILON) * 1e6) / 1e6;
-const APP_VERSION = 'v85';
+const APP_VERSION = 'v86';
 
 /* صفحة بحث وهمية للطوارئ — تُخفي التطبيق. تُغلق بثلاث مسافات. */
 function DecoyScreen(){
